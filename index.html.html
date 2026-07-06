@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Gestão — Estágios de Radiologia | Proz Educação</title>
+<style>
+  :root{
+    --navy-900:#2E0F52;
+    --navy-800:#4B1B7A;
+    --navy-700:#6B3FA8;
+    --blue-accent:#FF7F00;
+    --purple-vivid:#8C52FF;
+    --white:#FFFFFF;
+    --gray-bg:#F8F5FC;
+    --gray-border:#E7DFF5;
+    --gray-text:#6B6478;
+    --green:#1FA672;
+    --green-bg:#E7F8F1;
+    --orange:#F2822C;
+    --orange-bg:#FDEEE1;
+    --red:#E0453C;
+    --red-bg:#FBE9E8;
+    --radius:12px;
+    --shadow: 0 2px 8px rgba(46,15,82,0.07), 0 1px 2px rgba(46,15,82,0.05);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    background:var(--gray-bg);
+    color:var(--navy-900);
+  }
+
+  /* HEADER */
+  header{
+    background:linear-gradient(120deg, var(--navy-900) 0%, var(--navy-800) 55%, #8A3D1F 130%);
+    color:var(--white);
+    padding:26px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    position:relative;
+    overflow:hidden;
+  }
+  header::after{
+    content:"";
+    position:absolute;
+    top:-60%;right:-8%;
+    width:320px;height:320px;
+    background:radial-gradient(circle, rgba(255,127,0,0.35) 0%, rgba(255,127,0,0) 70%);
+    pointer-events:none;
+  }
+  header .brand{display:flex; align-items:center; gap:16px; position:relative; z-index:1;}
+  header .brand .logo{
+    width:56px;height:56px;border-radius:50%;
+    background:linear-gradient(135deg, var(--purple-vivid), var(--blue-accent));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 14px rgba(0,0,0,0.25), inset 0 0 0 2px rgba(255,255,255,0.15);
+    flex-shrink:0;
+  }
+  header .brand .logo svg{ width:30px; height:30px; color:#fff; }
+  header h1{
+    font-size:28px;margin:0;font-weight:800;letter-spacing:-0.01em;
+    line-height:1.15; text-shadow:0 2px 10px rgba(0,0,0,0.15);
+  }
+  header .eyebrow{
+    font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+    color:#FFC98F; margin:0 0 2px;
+  }
+  header p{margin:4px 0 0;font-size:13px;color:#D9C4F0;}
+  header .meta{font-size:12.5px;color:#D9C4F0;text-align:right; position:relative; z-index:1;}
+  .sync-row{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:6px;}
+  .sync-status{
+    font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:20px;
+    background:rgba(255,255,255,0.1);color:#E9DBFA;
+  }
+  .sync-status.ok{background:rgba(31,166,114,0.18);color:#7EE0B4;}
+  .sync-status.loading{background:rgba(140,82,255,0.25);color:#DFC8FF;}
+  .sync-status.offline{background:rgba(242,130,44,0.18);color:#FFC98F;}
+  .sync-refresh-btn{
+    background:rgba(255,255,255,0.12);border:none;color:#fff;
+    width:24px;height:24px;border-radius:50%;cursor:pointer;
+    font-size:14px;line-height:1;display:flex;align-items:center;justify-content:center;
+  }
+  .sync-refresh-btn:hover{background:rgba(255,255,255,0.22);}
+
+  main{max-width:1280px;margin:0 auto;padding:28px 24px 60px;}
+
+  /* CARDS */
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:32px;
+  }
+  .card{
+    background:var(--white);
+    border-radius:var(--radius);
+    border:1px solid var(--gray-border);
+    box-shadow:var(--shadow);
+    padding:20px;
+    position:relative;
+    overflow:hidden;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(11,31,58,0.10);}
+  .card .top-row{display:flex;justify-content:space-between;align-items:flex-start;}
+  .card .icon{
+    width:38px;height:38px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;
+  }
+  .card .label{
+    font-size:12.5px;color:var(--gray-text);
+    margin:14px 0 4px;font-weight:600;
+    text-transform:uppercase;letter-spacing:.03em;
+  }
+  .card .value{font-size:28px;font-weight:700;color:var(--navy-900);}
+  .card .sub{font-size:12px;margin-top:6px;font-weight:600;display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;}
+  .sub.positive{color:var(--green);background:var(--green-bg);}
+  .sub.alert{color:var(--orange);background:var(--orange-bg);}
+  .sub.danger{color:var(--red);background:var(--red-bg);}
+  .sub.neutral{color:var(--blue-accent);background:#FFE9D1;}
+
+  .icon.bg-blue{background:#EDE3FA;color:var(--navy-700);}
+  .icon.bg-navy{background:#EDE3FA;color:var(--navy-700);}
+  .icon.bg-orange{background:var(--orange-bg);color:var(--orange);}
+  .icon.bg-green{background:var(--green-bg);color:var(--green);}
+
+  /* TABS */
+  .tabs-nav{
+    display:flex;
+    gap:6px;
+    border-bottom:2px solid var(--gray-border);
+    margin-bottom:22px;
+  }
+  .tab-btn{
+    background:none;border:none;cursor:pointer;
+    padding:12px 20px;font-size:14.5px;font-weight:600;
+    color:var(--gray-text);
+    border-bottom:3px solid transparent;
+    margin-bottom:-2px;
+    transition:.15s;
+  }
+  .tab-btn:hover{color:var(--navy-800);}
+  .tab-btn.active{color:var(--navy-800); border-bottom-color:var(--blue-accent);}
+
+  .panel{display:none;}
+  .panel.active{display:block; animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  .panel-header{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:16px;flex-wrap:wrap;gap:10px;
+  }
+  .panel-header h2{font-size:17px;margin:0;color:var(--navy-900);}
+  .panel-header p{margin:2px 0 0;font-size:13px;color:var(--gray-text);}
+
+  .table-wrap{
+    background:var(--white);
+    border-radius:var(--radius);
+    border:1px solid var(--gray-border);
+    box-shadow:var(--shadow);
+    overflow-x:auto;
+  }
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:640px;}
+  thead th{
+    background:var(--navy-900);
+    color:#fff;
+    text-align:left;
+    padding:13px 16px;
+    font-weight:600;
+    font-size:12.5px;
+    text-transform:uppercase;
+    letter-spacing:.02em;
+    position:sticky;top:0;
+  }
+  tbody td{
+    padding:13px 16px;
+    border-bottom:1px solid var(--gray-border);
+    color:var(--navy-900);
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:#FAF6FE;}
+
+  .badge{
+    display:inline-block;padding:4px 11px;border-radius:20px;
+    font-size:12px;font-weight:600;
+  }
+  .badge.ativo{background:var(--green-bg);color:var(--green);}
+  .badge.concluido{background:#EDE3FA;color:var(--navy-700);}
+  .badge.proximo{background:var(--orange-bg);color:var(--orange);}
+  .badge.geral{background:#FFE9D1;color:var(--blue-accent);}
+  .badge.odonto{background:#F1E9FB;color:#7A3FC9;}
+  .badge.vet{background:var(--green-bg);color:var(--green);}
+  .badge.ok{background:var(--green-bg);color:var(--green);}
+  .badge.baixo{background:var(--orange-bg);color:var(--orange);}
+  .badge.critico{background:var(--red-bg);color:var(--red);}
+
+  .del-btn{
+    background:none;border:1px solid var(--gray-border);
+    color:var(--red);border-radius:8px;padding:5px 10px;
+    cursor:pointer;font-size:12px;font-weight:600;
+  }
+  .del-btn:hover{background:var(--red-bg);}
+
+  .unit-chip{
+    display:inline-block;background:#EDE3FA;color:var(--navy-700);
+    font-size:11.5px;font-weight:600;padding:3px 10px;
+    border-radius:20px;margin:2px 3px 2px 0;
+  }
+
+  /* ===== VAGAS DE ESTÁGIO (nova página) ===== */
+  .filter-bar{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    background:var(--white);
+    border:1px solid var(--gray-border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:16px 18px;
+    margin-bottom:20px;
+  }
+  .filter-label{
+    font-size:12.5px;font-weight:700;color:var(--navy-800);
+    text-transform:uppercase;letter-spacing:.03em;
+    margin-right:4px;
+  }
+  .filter-chip{
+    padding:7px 16px;border-radius:20px;
+    border:1.5px solid var(--gray-border);
+    background:#fff;color:var(--navy-800);
+    font-size:13px;font-weight:600;cursor:pointer;
+    transition:.15s;
+  }
+  .filter-chip:hover{border-color:var(--blue-accent);}
+  .filter-chip.active{
+    background:var(--blue-accent);border-color:var(--blue-accent);color:#fff;
+  }
+  .filter-chip.reset{
+    color:var(--gray-text);border-style:dashed;
+  }
+  .filter-count{
+    margin-left:auto;font-size:12.5px;color:var(--gray-text);font-weight:600;
+  }
+
+  .vagas-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+    gap:18px;
+  }
+  .vaga-card{
+    background:var(--white);
+    border:1px solid var(--gray-border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:20px;
+    display:flex;flex-direction:column;gap:12px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .vaga-card:hover{transform:translateY(-2px); box-shadow:0 8px 20px rgba(11,31,58,0.10);}
+  .vaga-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .vaga-card-head h3{margin:0;font-size:15.5px;color:var(--navy-900);line-height:1.3;}
+  .vaga-units{display:flex;flex-wrap:wrap;}
+
+  .vaga-progress-wrap{margin-top:2px;}
+  .vaga-progress-labels{
+    display:flex;justify-content:space-between;
+    font-size:12px;color:var(--gray-text);font-weight:600;margin-bottom:5px;
+  }
+  .vaga-progress-labels .disponiveis{font-size:13px;}
+  .vaga-progress-labels .disponiveis.ok{color:var(--green);}
+  .vaga-progress-labels .disponiveis.baixo{color:var(--orange);}
+  .vaga-progress-labels .disponiveis.critico{color:var(--red);}
+  .progress-track{
+    width:100%;height:8px;border-radius:20px;background:#EDF1F7;overflow:hidden;
+  }
+  .progress-fill{height:100%;border-radius:20px;transition:width .3s ease;}
+  .progress-fill.ok{background:var(--green);}
+  .progress-fill.baixo{background:var(--orange);}
+  .progress-fill.critico{background:var(--red);}
+
+  .vaga-divider{border:none;border-top:1px solid var(--gray-border);margin:2px 0;}
+  .vaga-alunos-title{
+    font-size:11.5px;font-weight:700;color:var(--gray-text);
+    text-transform:uppercase;letter-spacing:.03em;
+  }
+  .vaga-aluno-item{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:10px;padding:8px 10px;
+    background:#FAF6FE;border-radius:8px;font-size:12.5px;
+  }
+  .vaga-aluno-item .info strong{display:block;color:var(--navy-900);font-size:13px;}
+  .vaga-aluno-item .info span{color:var(--gray-text);font-size:11.5px;}
+  .vaga-empty{
+    font-size:12.5px;color:var(--gray-text);font-style:italic;padding:6px 0;
+  }
+  .checkbox-group{
+    grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px;padding-top:2px;
+  }
+  .checkbox-chip{
+    display:flex;align-items:center;gap:7px;
+    padding:8px 14px;border-radius:9px;
+    border:1px solid var(--gray-border);background:#FBFCFE;
+    font-size:13px;font-weight:500;color:var(--navy-900);cursor:pointer;
+  }
+  .checkbox-chip input{cursor:pointer;}
+
+  .turno-chips-cell{display:flex;flex-wrap:wrap;gap:5px;}
+  .turno-chip{
+    display:inline-flex;align-items:center;gap:4px;
+    font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;
+  }
+  .turno-chip.ok{background:var(--green-bg);color:var(--green);}
+  .turno-chip.baixo{background:var(--orange-bg);color:var(--orange);}
+  .turno-chip.critico{background:var(--red-bg);color:var(--red);}
+
+  .turno-mini-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;
+  }
+  .turno-mini-head{
+    display:flex;justify-content:space-between;
+    font-size:11.5px;font-weight:600;color:var(--gray-text);margin-bottom:4px;
+  }
+  .turno-mini-head .count{font-size:12px;font-weight:700;}
+  .turno-mini-head .count.ok{color:var(--green);}
+  .turno-mini-head .count.baixo{color:var(--orange);}
+  .turno-mini-head .count.critico{color:var(--red);}
+  .progress-track.small{height:6px;}
+
+  /* ===== DOSÍMETROS (levantamento mensal) ===== */
+  .dosi-toolbar{
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:20px;
+    background:var(--white);
+    border:1px solid var(--gray-border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:18px 20px;
+    margin-bottom:20px;
+  }
+  .dosi-toolbar .field{margin:0;}
+  .dosi-toolbar .field input{min-width:180px;}
+  .dosi-summary{display:flex;gap:28px;flex-wrap:wrap;}
+  .dosi-summary-item{display:flex;flex-direction:column;align-items:flex-start;gap:2px;}
+  .dosi-summary-value{font-size:24px;font-weight:700;color:var(--navy-900);}
+  .dosi-summary-item.alert .dosi-summary-value{color:var(--orange);}
+  .dosi-summary-label{font-size:11.5px;color:var(--gray-text);font-weight:600;text-transform:uppercase;letter-spacing:.02em;}
+
+  .dosi-mes-titulo{
+    font-size:15px;font-weight:700;color:var(--navy-800);
+    margin:4px 0 14px;
+  }
+
+  .unit-group{
+    background:var(--white);
+    border:1px solid var(--gray-border);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    margin-bottom:16px;
+    overflow:hidden;
+  }
+  .unit-group-header{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--navy-900);color:#fff;
+    padding:12px 18px;
+  }
+  .unit-group-header h4{margin:0;font-size:14px;font-weight:700;}
+  .unit-group-header .count-badge{
+    background:rgba(255,255,255,0.15);
+    padding:3px 12px;border-radius:20px;font-size:12px;font-weight:600;
+  }
+  .unit-group-list{padding:6px 0;}
+  .aluno-row{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:14px;padding:12px 20px;
+    border-bottom:1px solid var(--gray-border);
+    flex-wrap:wrap;
+  }
+  .aluno-row:last-child{border-bottom:none;}
+  .aluno-row .info strong{display:block;font-size:13.5px;color:var(--navy-900);}
+  .aluno-row .info span{font-size:12px;color:var(--gray-text);}
+  .aluno-row .tags{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .badge.novo{background:var(--green-bg);color:var(--green);}
+  .badge.encerra{background:var(--red-bg);color:var(--red);}
+  .badge.andamento{background:#FFE9D1;color:var(--blue-accent);}
+  .dosi-empty{
+    background:var(--white);border:1px dashed var(--gray-border);
+    border-radius:var(--radius);padding:30px;text-align:center;
+    color:var(--gray-text);font-size:13.5px;
+  }
+
+  /* FORM */
+  .form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px 24px;
+    background:var(--white);
+    border-radius:var(--radius);
+    border:1px solid var(--gray-border);
+    box-shadow:var(--shadow);
+    padding:26px;
+  }
+  .form-section-title{
+    grid-column:1/-1;
+    font-size:14px;font-weight:700;color:var(--navy-800);
+    margin:6px 0 -4px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--gray-border);
+  }
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:12.5px;font-weight:600;color:var(--gray-text);}
+  .field input, .field select{
+    padding:10px 12px;
+    border:1px solid var(--gray-border);
+    border-radius:8px;
+    font-size:13.5px;
+    color:var(--navy-900);
+    background:#FBFCFE;
+    outline:none;
+    transition:.15s;
+  }
+  .field input:focus, .field select:focus{
+    border-color:var(--blue-accent);
+    box-shadow:0 0 0 3px rgba(255,127,0,0.15);
+    background:#fff;
+  }
+  .form-actions{
+    grid-column:1/-1;
+    display:flex;gap:12px;margin-top:6px;
+    flex-wrap:wrap;
+  }
+  .btn{
+    padding:11px 22px;border:none;border-radius:9px;
+    font-size:14px;font-weight:600;cursor:pointer;
+    transition:.15s;
+  }
+  .btn-primary{background:var(--blue-accent);color:#fff;}
+  .btn-primary:hover{background:#E56F00;}
+  .btn-secondary{background:var(--navy-800);color:#fff;}
+  .btn-secondary:hover{background:var(--navy-900);}
+  .btn-ghost{background:none;border:1px solid var(--gray-border);color:var(--gray-text);}
+  .btn-ghost:hover{background:#F3EDFB;}
+
+  .toast{
+    position:fixed;bottom:24px;right:24px;
+    background:var(--navy-900);color:#fff;
+    padding:14px 20px;border-radius:10px;
+    font-size:13.5px;font-weight:500;
+    box-shadow:0 8px 24px rgba(0,0,0,0.2);
+    display:flex;align-items:center;gap:10px;
+    transform:translateY(20px);opacity:0;
+    pointer-events:none;
+    transition:.3s ease;
+    z-index:999;
+  }
+  .toast.show{transform:translateY(0);opacity:1;}
+  .toast .dot{width:8px;height:8px;border-radius:50%;background:var(--green);}
+
+  .radio-group{display:flex;gap:16px;align-items:center;padding-top:4px;}
+  .radio-group label{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:500;color:var(--navy-900);}
+
+  footer{
+    text-align:center;padding:20px;font-size:12px;color:var(--gray-text);
+  }
+
+  @media(max-width:1000px){
+    .cards{grid-template-columns:repeat(2,1fr);}
+  }
+  @media(max-width:640px){
+    .cards{grid-template-columns:1fr;}
+    .form-grid{grid-template-columns:1fr;}
+    header{flex-direction:column;align-items:flex-start;}
+    header .meta{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <circle cx="12" cy="12" r="2.6"/>
+        <rect x="10.4" y="1.8" width="3.2" height="8.4" rx="1.6"/>
+        <rect x="10.4" y="1.8" width="3.2" height="8.4" rx="1.6" transform="rotate(120 12 12)"/>
+        <rect x="10.4" y="1.8" width="3.2" height="8.4" rx="1.6" transform="rotate(240 12 12)"/>
+      </svg>
+    </div>
+    <div>
+      <p class="eyebrow">Proz Educação</p>
+      <h1>Gestão de Estágios — Radiologia</h1>
+      <p>Painel Operacional de Campos e Alunos</p>
+    </div>
+  </div>
+  <div class="meta">
+    <div id="dataAtual"></div>
+    <div>Ciclo letivo 2026/2027</div>
+    <div class="sync-row">
+      <span class="sync-status offline" id="syncStatus">Verificando sincronização…</span>
+      <button class="sync-refresh-btn" id="syncRefreshBtn" title="Buscar atualizações da equipe agora">↻</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= CARDS ================= -->
+  <section class="cards" id="cardsContainer">
+    <div class="card">
+      <div class="top-row">
+        <div class="icon bg-blue">💰</div>
+      </div>
+      <div class="label">Custo Total do Estágio</div>
+      <div class="value" id="cardCusto">R$ 0</div>
+      <span class="sub neutral">Mês corrente</span>
+    </div>
+
+    <div class="card">
+      <div class="top-row">
+        <div class="icon bg-orange">📉</div>
+      </div>
+      <div class="label">Vagas Ociosas</div>
+      <div class="value" id="cardOciosidade">0</div>
+      <span class="sub alert" id="subOciosidade">Atenção à taxa de ocupação</span>
+    </div>
+
+    <div class="card">
+      <div class="top-row">
+        <div class="icon bg-green">🧑‍⚕️</div>
+      </div>
+      <div class="label">Alunos Ativos em Campo</div>
+      <div class="value" id="cardAtivos">0</div>
+      <span class="sub positive">Em atividade agora</span>
+    </div>
+
+    <div class="card">
+      <div class="top-row">
+        <div class="icon bg-navy">🦺</div>
+      </div>
+      <div class="label">Dosímetros a Solicitar</div>
+      <div class="value" id="cardDosimetros">0</div>
+      <span class="sub neutral">Próximo período</span>
+    </div>
+  </section>
+
+  <!-- ================= TABS ================= -->
+  <nav class="tabs-nav">
+    <button class="tab-btn active" data-tab="tab3">Novo Registro</button>
+    <button class="tab-btn" data-tab="tab2">Alunos e Alocação</button>
+    <button class="tab-btn" data-tab="tabVagas">Vagas de Estágio</button>
+    <button class="tab-btn" data-tab="tabDosimetros">Dosímetros</button>
+  </nav>
+
+  <!-- ===== TAB 2: ALUNOS ===== -->
+  <section class="panel" id="tab2">
+    <div class="panel-header">
+      <div>
+        <h2>Lista de Alunos e Alocação</h2>
+        <p>Situação individual de cada aluno em campo de estágio de Radiologia</p>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Aluno</th>
+            <th>Unidade</th>
+            <th>Campo Alocado</th>
+            <th>Turno</th>
+            <th>Início</th>
+            <th>Término</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="alunosTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== TAB VAGAS: VAGAS DE ESTÁGIO ===== -->
+  <section class="panel" id="tabVagas">
+    <div class="panel-header">
+      <div>
+        <h2>Vagas de Estágio</h2>
+        <p>Filtre por unidade e visualize, campo a campo, quem está alocado, o período e as vagas disponíveis</p>
+      </div>
+    </div>
+
+    <div class="filter-bar" id="filterBar">
+      <span class="filter-label">Filtrar por unidade:</span>
+      <!-- chips de unidade inseridos via JS -->
+      <span class="filter-count" id="filterCount"></span>
+    </div>
+
+    <div class="vagas-grid" id="vagasGrid"></div>
+  </section>
+
+  <!-- ===== TAB DOSÍMETROS: LEVANTAMENTO MENSAL ===== -->
+  <section class="panel" id="tabDosimetros">
+    <div class="panel-header">
+      <div>
+        <h2>Dosímetros</h2>
+        <p>Levantamento mensal de alunos em campo para controle e solicitação de dosímetros</p>
+      </div>
+    </div>
+
+    <div class="dosi-toolbar">
+      <div class="field" style="min-width:220px;">
+        <label>Mês de referência</label>
+        <input type="month" id="dosiMes" value="2026-06">
+      </div>
+      <div class="dosi-summary">
+        <div class="dosi-summary-item">
+          <span class="dosi-summary-value" id="dosiTotalAlunos">0</span>
+          <span class="dosi-summary-label">Alunos em campo</span>
+        </div>
+        <div class="dosi-summary-item">
+          <span class="dosi-summary-value" id="dosiTotalUnidades">0</span>
+          <span class="dosi-summary-label">Unidades envolvidas</span>
+        </div>
+        <div class="dosi-summary-item alert">
+          <span class="dosi-summary-value" id="dosiNovos">0</span>
+          <span class="dosi-summary-label">Dosímetros novos a solicitar</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="dosiTituloMes" class="dosi-mes-titulo"></div>
+
+    <div id="dosiGrupos"></div>
+  </section>
+
+  <!-- ===== TAB 3: FORMULÁRIO ===== -->
+  <section class="panel active" id="tab3">
+    <div class="panel-header">
+      <div>
+        <h2>Novo Registro</h2>
+        <p>Simule a inclusão de um aluno ou de um novo campo de estágio e veja os indicadores atualizarem em tempo real</p>
+      </div>
+    </div>
+
+    <div class="radio-group" style="margin-bottom:16px;">
+      <label><input type="radio" name="formType" value="aluno" checked> Novo Aluno</label>
+      <label><input type="radio" name="formType" value="campo"> Novo Campo de Estágio</label>
+    </div>
+
+    <!-- FORM ALUNO -->
+    <form class="form-grid" id="formAluno">
+      <div class="form-section-title">Dados do Aluno</div>
+
+      <div class="field">
+        <label>Nome do Aluno</label>
+        <input type="text" id="alunoNome" placeholder="Ex: Camila Ferreira">
+      </div>
+      <div class="field">
+        <label>Unidade Proz</label>
+        <select id="alunoUnidade"></select>
+      </div>
+      <div class="field">
+        <label>Campo de Alocação</label>
+        <select id="alunoCampo"></select>
+      </div>
+      <div class="field">
+        <label>Turno</label>
+        <select id="alunoTurno">
+          <option>Manhã</option>
+          <option>Tarde</option>
+          <option>Noite</option>
+          <option>Fim de Semana</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Data de Início</label>
+        <input type="date" id="alunoInicio">
+      </div>
+      <div class="field">
+        <label>Data de Término</label>
+        <input type="date" id="alunoTermino">
+      </div>
+      <div class="field">
+        <label>Status</label>
+        <select id="alunoStatus">
+          <option value="Ativo">Ativo</option>
+          <option value="Próximo Mês">Próximo Mês</option>
+          <option value="Concluído">Concluído</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Custo Mensal do Estágio (R$)</label>
+        <input type="number" id="alunoCusto" placeholder="Ex: 850" min="0">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Adicionar Aluno</button>
+        <button type="reset" class="btn btn-ghost">Limpar</button>
+      </div>
+    </form>
+
+    <!-- FORM CAMPO -->
+    <form class="form-grid" id="formCampo" style="display:none;">
+      <div class="form-section-title">Dados do Campo de Estágio</div>
+
+      <div class="field">
+        <label>Hospital / Clínica</label>
+        <input type="text" id="campoNome" placeholder="Ex: Hospital Santa Filomena">
+      </div>
+      <div class="field">
+        <label>Tipo de Serviço</label>
+        <select id="campoTipo">
+          <option value="Assistencial">Assistencial</option>
+          <option value="Odontológica">Odontológica</option>
+          <option value="Veterinária">Veterinária</option>
+        </select>
+      </div>
+
+      <div class="field" style="grid-column:1/-1;">
+        <label>Unidades Proz vinculadas a este campo (selecione uma ou mais)</label>
+      </div>
+      <div class="checkbox-group" id="campoUnidadesGroup"></div>
+
+      <div class="field" style="grid-column:1/-1;">
+        <label>Vagas por turno (a ocupação é calculada automaticamente conforme alunos forem alocados)</label>
+      </div>
+      <div class="field">
+        <label>Vagas Manhã</label>
+        <input type="number" id="campoVagasManha" placeholder="Ex: 4" min="0" value="0">
+      </div>
+      <div class="field">
+        <label>Vagas Tarde</label>
+        <input type="number" id="campoVagasTarde" placeholder="Ex: 4" min="0" value="0">
+      </div>
+      <div class="field">
+        <label>Vagas Noite</label>
+        <input type="number" id="campoVagasNoite" placeholder="Ex: 2" min="0" value="0">
+      </div>
+      <div class="field">
+        <label>Vagas Fim de Semana</label>
+        <input type="number" id="campoVagasFDS" placeholder="Ex: 2" min="0" value="0">
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-secondary">Adicionar Campo</button>
+        <button type="reset" class="btn btn-ghost">Limpar</button>
+      </div>
+    </form>
+  </section>
+
+</main>
+
+<footer>Painel de Gestão de Estágios — Radiologia · Proz Educação · Dados fictícios para demonstração</footer>
+
+<div class="toast" id="toast"><span class="dot"></span><span id="toastMsg">Registro adicionado!</span></div>
+
+<!-- Supabase (banco de dados compartilhado da equipe) — se este script não
+     carregar (sem internet ou domínio bloqueado), o painel funciona
+     normalmente em modo local, sem sincronizar com a equipe. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  // ============== DADOS FICTÍCIOS ==============
+  const UNIDADES = [
+    "São Miguel Paulista",
+    "Guarulhos",
+    "Itaquera",
+    "Guaianases",
+    "Santo Amaro",
+    "Grajaú",
+    "Jabaquara",
+    "Carapicuíba",
+    "Mauá",
+    "Diadema",
+    "Montes Claros",
+    "Divinópolis",
+    "Uberlândia",
+    "Belo Horizonte",
+    "Venda Nova",
+    "Contagem",
+    "Juiz de Fora"
+  ];
+
+  const TURNOS = [
+    { key: "manha",       label: "Manhã" },
+    { key: "tarde",       label: "Tarde" },
+    { key: "noite",       label: "Noite" },
+    { key: "fimDeSemana", label: "Fim de Semana" }
+  ];
+
+  // ================================================================
+  // CONFIGURAÇÃO DO SUPABASE — cole aqui os dados do SEU projeto
+  // (Painel do Supabase → Project Settings → API)
+  // ================================================================
+  const SUPABASE_URL = "https://fqyuolcfgrhpkxxrjfga.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_1Kugof6WdB5EKZc6csTEgg_cebbcY45";
+
+  const SEED_CAMPOS = [
+    { id: 1, unidades: ["Grajaú", "Guaianases"],     hospital: "Hospital Municipal do Grajaú",   tipo: "Assistencial", vagas: { manha: 4, tarde: 4, noite: 2, fimDeSemana: 2 } },
+    { id: 2, unidades: ["Itaquera"],                 hospital: "Clínica Radiológica Vida Plena", tipo: "Assistencial", vagas: { manha: 3, tarde: 3, noite: 1, fimDeSemana: 1 } },
+    { id: 3, unidades: ["Santo Amaro", "Jabaquara"], hospital: "Hospital Veterinário São Judas",  tipo: "Veterinária",  vagas: { manha: 2, tarde: 2, noite: 1, fimDeSemana: 1 } },
+  ];
+
+  const SEED_ALUNOS = [
+    { id: 1, nome: "Ana Beatriz Souza",     unidade: "Grajaú",      campoId: 1, turno: "Manhã", inicio: "2026-02-03", termino: "2026-07-15", status: "Ativo",       custo: 780 },
+    { id: 2, nome: "Bruno Henrique Lima",   unidade: "Guaianases",  campoId: 1, turno: "Tarde", inicio: "2026-02-03", termino: "2026-07-15", status: "Ativo",       custo: 780 },
+    { id: 3, nome: "Camila Rodrigues",      unidade: "Itaquera",    campoId: 2, turno: "Manhã", inicio: "2026-03-01", termino: "2026-08-10", status: "Ativo",       custo: 820 },
+    { id: 4, nome: "Diego Fernandes",       unidade: "Itaquera",    campoId: 2, turno: "Noite", inicio: "2026-01-05", termino: "2026-06-20", status: "Concluído",   custo: 820 },
+    { id: 5, nome: "Elisa Martins Costa",   unidade: "Santo Amaro", campoId: 3, turno: "Tarde", inicio: "2026-08-01", termino: "2026-12-15", status: "Próximo Mês", custo: 690 },
+  ];
+
+  let campos = [];
+  let alunos = [];
+  let filtroUnidades = []; // unidades selecionadas no filtro da página "Vagas de Estágio"
+  let proximoIdLocal = 900001; // ids locais ficam numa faixa alta pra não colidir com ids reais do banco
+
+  // ============== SUPABASE (banco compartilhado com a equipe) ==============
+  const supabaseConfigurado = SUPABASE_URL && !SUPABASE_URL.startsWith('COLE_AQUI')
+    && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.startsWith('COLE_AQUI');
+  let sb = null;
+
+  if(supabaseConfigurado && typeof supabase !== 'undefined'){
+    try{
+      sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }catch(err){
+      console.error('Erro ao iniciar Supabase:', err);
+      sb = null;
+    }
+  }
+
+  function setStatusSync(estado, texto){
+    const el = document.getElementById('syncStatus');
+    if(!el) return;
+    el.className = 'sync-status ' + estado;
+    el.textContent = texto;
+  }
+
+  function gerarIdLocal(){
+    return proximoIdLocal++;
+  }
+
+  // Converte uma linha da tabela "campos" (snake_case do Postgres) para o formato usado no painel
+  function campoFromRow(row){
+    return {
+      id: row.id,
+      hospital: row.hospital,
+      tipo: row.tipo,
+      unidades: row.unidades || [],
+      vagas: row.vagas || { manha: 0, tarde: 0, noite: 0, fimDeSemana: 0 }
+    };
+  }
+
+  // Converte uma linha da tabela "alunos" (snake_case do Postgres) para o formato usado no painel
+  function alunoFromRow(row){
+    return {
+      id: row.id,
+      nome: row.nome,
+      unidade: row.unidade,
+      campoId: row.campo_id,
+      turno: row.turno,
+      inicio: row.inicio,
+      termino: row.termino,
+      status: row.status,
+      custo: Number(row.custo) || 0
+    };
+  }
+
+  async function carregarTudoDoSupabase(){
+    const [{ data: camposData, error: err1 }, { data: alunosData, error: err2 }] = await Promise.all([
+      sb.from('campos').select('*').order('id'),
+      sb.from('alunos').select('*').order('id')
+    ]);
+    if(err1) throw err1;
+    if(err2) throw err2;
+    campos = (camposData || []).map(campoFromRow);
+    alunos = (alunosData || []).map(alunoFromRow);
+  }
+
+  // Escuta em tempo real: qualquer alteração feita por um colega (em qualquer
+  // computador) chega automaticamente aqui, sem precisar recarregar a página.
+  function iniciarRealtimeSupabase(){
+    sb.channel('mudancas-campos')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'campos' }, () => recarregarEAtualizar())
+      .subscribe();
+
+    sb.channel('mudancas-alunos')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'alunos' }, () => recarregarEAtualizar())
+      .subscribe();
+  }
+
+  async function recarregarEAtualizar(){
+    try{
+      await carregarTudoDoSupabase();
+      renderAll();
+      const hora = new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+      setStatusSync('ok', `✅ Sincronizado com a equipe (${hora})`);
+    }catch(err){
+      console.error('Erro ao sincronizar:', err);
+      setStatusSync('offline', '⚠️ Erro ao sincronizar com a equipe');
+    }
+  }
+
+  // Popula o banco compartilhado com os dados de exemplo (uso único, quando o banco está vazio)
+  async function semearDadosExemplo(){
+    if(!sb) return;
+    showToast('Carregando dados de exemplo para a equipe…');
+    try{
+      const mapaCampoId = {};
+      for(const c of SEED_CAMPOS){
+        const { id, ...resto } = c;
+        const { data, error } = await sb.from('campos').insert(resto).select().single();
+        if(error) throw error;
+        mapaCampoId[id] = data.id;
+      }
+      for(const a of SEED_ALUNOS){
+        const { campoId, id, ...resto } = a;
+        const { error } = await sb.from('alunos').insert({ ...resto, campo_id: mapaCampoId[campoId] || null });
+        if(error) throw error;
+      }
+      showToast('Dados de exemplo carregados!');
+    }catch(err){
+      console.error(err);
+      showToast('Não foi possível carregar os dados de exemplo. Confira se as tabelas existem no Supabase.');
+    }
+  }
+
+  // ---- Operações de escrita: usam Supabase quando configurado, senão ficam só na memória local ----
+  async function adicionarAlunoRemoto(alunoSemId){
+    if(sb){
+      const { campoId, ...resto } = alunoSemId;
+      const { error } = await sb.from('alunos').insert({ ...resto, campo_id: campoId });
+      if(error) throw error;
+    } else {
+      alunos.push({ id: gerarIdLocal(), ...alunoSemId });
+      renderAll();
+    }
+  }
+
+  async function removerAlunoRemoto(id){
+    if(sb){
+      const { error } = await sb.from('alunos').delete().eq('id', id);
+      if(error) throw error;
+    } else {
+      alunos = alunos.filter(a => a.id !== id);
+      renderAll();
+    }
+  }
+
+  async function adicionarCampoRemoto(campoSemId){
+    if(sb){
+      const { error } = await sb.from('campos').insert(campoSemId);
+      if(error) throw error;
+    } else {
+      campos.push({ id: gerarIdLocal(), ...campoSemId });
+      renderAll();
+    }
+  }
+
+
+
+  // ============== RENDER: DATA ATUAL ==============
+  document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+
+  // ============== CÁLCULO DE OCUPAÇÃO POR TURNO ==============
+  // A ocupação nunca é digitada manualmente: é sempre recalculada a partir
+  // da lista de alunos alocados (status "Ativo") em cada campo/turno.
+  function contarOcupadas(campoId, turnoLabel){
+    return alunos.filter(a => String(a.campoId) === String(campoId) && a.turno === turnoLabel && a.status === 'Ativo').length;
+  }
+
+  function getTurnoStats(campo){
+    return TURNOS.map(t => {
+      const vagas = Number(campo.vagas[t.key] || 0);
+      const ocupadas = contarOcupadas(campo.id, t.label);
+      const disponiveis = Math.max(0, vagas - ocupadas);
+      return { ...t, vagas, ocupadas, disponiveis, status: ocupacaoStatus(vagas, ocupadas) };
+    });
+  }
+
+  function getCampoTotais(campo){
+    return getTurnoStats(campo).reduce((acc, t) => {
+      acc.vagas += t.vagas;
+      acc.ocupadas += t.ocupadas;
+      return acc;
+    }, { vagas: 0, ocupadas: 0 });
+  }
+
+  // ============== RENDER: CARDS ==============
+  function formatCurrency(v){
+    return v.toLocaleString('pt-BR', { style:'currency', currency:'BRL', maximumFractionDigits:0 });
+  }
+
+  function renderCards(){
+    const custoTotal = alunos
+      .filter(a => a.status !== 'Concluído')
+      .reduce((sum, a) => sum + Number(a.custo), 0);
+
+    const totais = campos.reduce((acc, c) => {
+      const t = getCampoTotais(c);
+      acc.vagas += t.vagas;
+      acc.ocupadas += t.ocupadas;
+      return acc;
+    }, { vagas: 0, ocupadas: 0 });
+    const totalVagas = totais.vagas;
+    const ociosas = totalVagas - totais.ocupadas;
+
+    const ativos = alunos.filter(a => a.status === 'Ativo').length;
+    const proximoMes = alunos.filter(a => a.status === 'Próximo Mês').length;
+
+    document.getElementById('cardCusto').textContent = formatCurrency(custoTotal);
+    document.getElementById('cardOciosidade').textContent = ociosas;
+    document.getElementById('cardAtivos').textContent = ativos;
+    document.getElementById('cardDosimetros').textContent = proximoMes;
+
+    const subOcio = document.getElementById('subOciosidade');
+    const taxaOciosidade = totalVagas > 0 ? (ociosas/totalVagas)*100 : 0;
+    if(taxaOciosidade > 30){
+      subOcio.className = 'sub danger';
+      subOcio.textContent = `${taxaOciosidade.toFixed(0)}% de ociosidade — crítico`;
+    } else if(taxaOciosidade > 15){
+      subOcio.className = 'sub alert';
+      subOcio.textContent = `${taxaOciosidade.toFixed(0)}% de ociosidade`;
+    } else {
+      subOcio.className = 'sub positive';
+      subOcio.textContent = `${taxaOciosidade.toFixed(0)}% de ociosidade — saudável`;
+    }
+  }
+
+
+  // ============== RENDER: TABELA DE CAMPOS ==============
+  function tipoBadgeClass(tipo){
+    if(tipo === 'Assistencial') return 'geral';
+    if(tipo === 'Odontológica') return 'odonto';
+    return 'vet';
+  }
+
+  // ============== RENDER: PÁGINA VAGAS DE ESTÁGIO ==============
+  function ocupacaoStatus(vagas, ocupadas){
+    const disponiveis = vagas - ocupadas;
+    const taxaOciosidade = vagas > 0 ? (disponiveis / vagas) * 100 : 0;
+    if(taxaOciosidade > 30) return 'critico';
+    if(taxaOciosidade > 15) return 'baixo';
+    return 'ok';
+  }
+
+
+  function renderFilterChips(){
+    const bar = document.getElementById('filterBar');
+    // remove chips antigos (mantém o label e o contador)
+    bar.querySelectorAll('.filter-chip').forEach(el => el.remove());
+
+    const resetChip = document.createElement('button');
+    resetChip.className = 'filter-chip reset' + (filtroUnidades.length === 0 ? ' active' : '');
+    resetChip.textContent = 'Todas';
+    resetChip.addEventListener('click', () => { filtroUnidades = []; renderVagas(); renderFilterChips(); });
+    bar.insertBefore(resetChip, document.getElementById('filterCount'));
+
+    UNIDADES.forEach(u => {
+      const chip = document.createElement('button');
+      const isActive = filtroUnidades.includes(u);
+      chip.className = 'filter-chip' + (isActive ? ' active' : '');
+      chip.textContent = u;
+      chip.addEventListener('click', () => {
+        if(isActive){
+          filtroUnidades = filtroUnidades.filter(x => x !== u);
+        } else {
+          filtroUnidades = [...filtroUnidades, u];
+        }
+        renderVagas();
+        renderFilterChips();
+      });
+      bar.insertBefore(chip, document.getElementById('filterCount'));
+    });
+  }
+
+  function renderVagas(){
+    const grid = document.getElementById('vagasGrid');
+    const count = document.getElementById('filterCount');
+    grid.innerHTML = '';
+
+    const camposFiltrados = filtroUnidades.length === 0
+      ? campos
+      : campos.filter(c => c.unidades.some(u => filtroUnidades.includes(u)));
+
+    count.textContent = `${camposFiltrados.length} campo(s) exibido(s)`;
+
+    if(camposFiltrados.length === 0){
+      grid.innerHTML = `<div class="vaga-empty">Nenhum campo encontrado para as unidades selecionadas.</div>`;
+      return;
+    }
+
+    camposFiltrados.forEach(c => {
+      const turnoStats = getTurnoStats(c);
+      const totais = getCampoTotais(c);
+      const disponiveis = totais.vagas - totais.ocupadas;
+      const pctOcupado = totais.vagas > 0 ? Math.min(100, (totais.ocupadas / totais.vagas) * 100) : 0;
+      const status = ocupacaoStatus(totais.vagas, totais.ocupadas);
+
+      const alunosDoCompo = alunos.filter(a => String(a.campoId) === String(c.id));
+
+      const alunosHtml = alunosDoCompo.length > 0
+        ? alunosDoCompo.map(a => `
+            <div class="vaga-aluno-item">
+              <div class="info">
+                <strong>${a.nome}</strong>
+                <span>${a.unidade} · ${a.turno} · ${formatDate(a.inicio)} — ${formatDate(a.termino)}</span>
+              </div>
+              <span class="badge ${statusBadgeClass(a.status)}">${a.status}</span>
+            </div>
+          `).join('')
+        : `<div class="vaga-empty">Nenhum aluno alocado neste campo.</div>`;
+
+      const turnoMiniHtml = turnoStats.map(t => {
+        const pct = t.vagas > 0 ? Math.min(100, (t.ocupadas / t.vagas) * 100) : 0;
+        return `
+          <div class="turno-mini">
+            <div class="turno-mini-head">
+              <span>${t.label}</span>
+              <span class="count ${t.status}">${t.ocupadas}/${t.vagas}</span>
+            </div>
+            <div class="progress-track small">
+              <div class="progress-fill ${t.status}" style="width:${pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const card = document.createElement('div');
+      card.className = 'vaga-card';
+      card.innerHTML = `
+        <div class="vaga-card-head">
+          <h3>${c.hospital}</h3>
+          <span class="badge ${tipoBadgeClass(c.tipo)}">${c.tipo}</span>
+        </div>
+
+        <div class="vaga-units">
+          ${c.unidades.map(u => `<span class="unit-chip">${u}</span>`).join('')}
+        </div>
+
+        <div class="vaga-progress-wrap">
+          <div class="vaga-progress-labels">
+            <span>${totais.ocupadas} de ${totais.vagas} vagas ocupadas (total)</span>
+            <span class="disponiveis ${status}">${disponiveis} disponíveis</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill ${status}" style="width:${pctOcupado}%"></div>
+          </div>
+        </div>
+
+        <hr class="vaga-divider">
+
+        <div>
+          <div class="vaga-alunos-title" style="margin-bottom:8px;">Vagas por turno</div>
+          <div class="turno-mini-grid">${turnoMiniHtml}</div>
+        </div>
+
+        <hr class="vaga-divider">
+
+        <div>
+          <div class="vaga-alunos-title" style="margin-bottom:8px;">Alunos alocados (${alunosDoCompo.length})</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            ${alunosHtml}
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // ============== RENDER: TABELA DE ALUNOS ==============
+  function statusBadgeClass(status){
+    if(status === 'Ativo') return 'ativo';
+    if(status === 'Concluído') return 'concluido';
+    return 'proximo';
+  }
+
+  function formatDate(iso){
+    const [y,m,d] = iso.split('-');
+    return `${d}/${m}/${y}`;
+  }
+
+  function renderAlunos(){
+    const tbody = document.getElementById('alunosTableBody');
+    tbody.innerHTML = '';
+    alunos.forEach(a => {
+      const campo = campos.find(c => c.id === a.campoId);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${a.nome}</strong></td>
+        <td>${a.unidade}</td>
+        <td>${campo ? campo.hospital : '—'}</td>
+        <td>${a.turno}</td>
+        <td>${formatDate(a.inicio)}</td>
+        <td>${formatDate(a.termino)}</td>
+        <td><span class="badge ${statusBadgeClass(a.status)}">${a.status}</span></td>
+        <td><button class="del-btn" data-id="${a.id}">Remover</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('.del-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = Number(btn.dataset.id);
+        try{
+          await removerAlunoRemoto(id);
+          showToast('Aluno removido.');
+        }catch(err){
+          console.error(err);
+          showToast('Não foi possível remover o aluno. Tente novamente.');
+        }
+      });
+    });
+  }
+
+  // ============== RENDER: SELECTS DO FORMULÁRIO ==============
+  function renderSelects(){
+    const alunoUnidadeSel = document.getElementById('alunoUnidade');
+    alunoUnidadeSel.innerHTML = UNIDADES.map(u => `<option value="${u}">${u}</option>`).join('');
+
+    const campoUnidadesGroup = document.getElementById('campoUnidadesGroup');
+    campoUnidadesGroup.innerHTML = UNIDADES.map((u, i) => `
+      <label class="checkbox-chip">
+        <input type="checkbox" name="campoUnidadeCheck" value="${u}">
+        ${u}
+      </label>
+    `).join('');
+
+    updateCampoOptions();
+    alunoUnidadeSel.removeEventListener('change', updateCampoOptions);
+    alunoUnidadeSel.addEventListener('change', updateCampoOptions);
+
+    const alunoTurnoSel = document.getElementById('alunoTurno');
+    alunoTurnoSel.removeEventListener('change', updateCampoOptions);
+    alunoTurnoSel.addEventListener('change', updateCampoOptions);
+  }
+
+  function updateCampoOptions(){
+    const unidadeSelecionada = document.getElementById('alunoUnidade').value;
+    const turnoSelecionado = document.getElementById('alunoTurno').value;
+    const campoSel = document.getElementById('alunoCampo');
+    const disponiveis = campos.filter(c => c.unidades.includes(unidadeSelecionada));
+    campoSel.innerHTML = disponiveis.length > 0
+      ? disponiveis.map(c => {
+          const stat = getTurnoStats(c).find(t => t.label === turnoSelecionado);
+          const livres = stat ? stat.disponiveis : 0;
+          return `<option value="${c.id}">${c.hospital} (${livres} vagas livres — ${turnoSelecionado})</option>`;
+        }).join('')
+      : `<option value="">Nenhum campo vinculado a esta unidade</option>`;
+  }
+
+  // ============== DOSÍMETROS: LEVANTAMENTO MENSAL ==============
+  const MESES_PT = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+
+  function parseDate(iso){
+    const [y,m,d] = iso.split('-').map(Number);
+    return new Date(y, m-1, d);
+  }
+
+  function alunosNoMes(mesStr){
+    // mesStr no formato "YYYY-MM"
+    const [ano, mes] = mesStr.split('-').map(Number);
+    const primeiroDia = new Date(ano, mes-1, 1);
+    const ultimoDia = new Date(ano, mes, 0);
+
+    return alunos.filter(a => {
+      const inicio = parseDate(a.inicio);
+      const termino = parseDate(a.termino);
+      return inicio <= ultimoDia && termino >= primeiroDia;
+    }).map(a => {
+      const inicio = parseDate(a.inicio);
+      const termino = parseDate(a.termino);
+      let situacao = 'andamento';
+      if(inicio >= primeiroDia && inicio <= ultimoDia) situacao = 'novo';
+      else if(termino >= primeiroDia && termino <= ultimoDia) situacao = 'encerra';
+      return { ...a, situacaoMes: situacao };
+    });
+  }
+
+  function renderDosimetros(){
+    const mesInput = document.getElementById('dosiMes');
+    const mesStr = mesInput.value;
+    if(!mesStr) return;
+
+    const [ano, mes] = mesStr.split('-').map(Number);
+    document.getElementById('dosiTituloMes').textContent =
+      `Alunos em estágio em ${MESES_PT[mes-1]} de ${ano}`;
+
+    const lista = alunosNoMes(mesStr);
+    const unidadesEnvolvidas = [...new Set(lista.map(a => a.unidade))];
+    const novos = lista.filter(a => a.situacaoMes === 'novo');
+
+    document.getElementById('dosiTotalAlunos').textContent = lista.length;
+    document.getElementById('dosiTotalUnidades').textContent = unidadesEnvolvidas.length;
+    document.getElementById('dosiNovos').textContent = novos.length;
+
+    const gruposEl = document.getElementById('dosiGrupos');
+    gruposEl.innerHTML = '';
+
+    if(lista.length === 0){
+      gruposEl.innerHTML = `<div class="dosi-empty">Nenhum aluno em campo no mês selecionado.</div>`;
+      return;
+    }
+
+    // Agrupa nominalmente por unidade
+    const porUnidade = {};
+    lista.forEach(a => {
+      if(!porUnidade[a.unidade]) porUnidade[a.unidade] = [];
+      porUnidade[a.unidade].push(a);
+    });
+
+    const situacaoLabel = { novo: 'Novo no mês', encerra: 'Encerra no mês', andamento: 'Em andamento' };
+    const situacaoClass = { novo: 'novo', encerra: 'encerra', andamento: 'andamento' };
+
+    Object.keys(porUnidade).sort().forEach(unidade => {
+      const alunosUnidade = porUnidade[unidade].sort((a,b) => a.nome.localeCompare(b.nome));
+      const group = document.createElement('div');
+      group.className = 'unit-group';
+      group.innerHTML = `
+        <div class="unit-group-header">
+          <h4>${unidade}</h4>
+          <span class="count-badge">${alunosUnidade.length} aluno(s)</span>
+        </div>
+        <div class="unit-group-list">
+          ${alunosUnidade.map(a => {
+            const campo = campos.find(c => c.id === a.campoId);
+            return `
+              <div class="aluno-row">
+                <div class="info">
+                  <strong>${a.nome}</strong>
+                  <span>${campo ? campo.hospital : '—'} · ${a.turno} · ${formatDate(a.inicio)} — ${formatDate(a.termino)}</span>
+                </div>
+                <div class="tags">
+                  <span class="badge ${situacaoClass[a.situacaoMes]}">${situacaoLabel[a.situacaoMes]}</span>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+      gruposEl.appendChild(group);
+    });
+  }
+
+  // ============== TOAST ==============
+  let toastTimeout;
+  function showToast(msg){
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove('show'), 2600);
+  }
+
+  // ============== RENDER ALL ==============
+  function renderAll(){
+    renderCards();
+    renderVagas();
+    renderFilterChips();
+    renderAlunos();
+    renderSelects();
+    renderDosimetros();
+  }
+
+  document.getElementById('dosiMes').addEventListener('change', renderDosimetros);
+
+  // ============== TABS ==============
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ============== FORM TOGGLE (Aluno / Campo) ==============
+  document.querySelectorAll('input[name="formType"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const isAluno = e.target.value === 'aluno';
+      document.getElementById('formAluno').style.display = isAluno ? 'grid' : 'none';
+      document.getElementById('formCampo').style.display = isAluno ? 'none' : 'grid';
+    });
+  });
+
+  // ============== SUBMIT: NOVO ALUNO ==============
+  document.getElementById('formAluno').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const unidade = document.getElementById('alunoUnidade').value;
+    const campoValor = document.getElementById('alunoCampo').value;
+    const nome = document.getElementById('alunoNome').value.trim();
+    const inicio = document.getElementById('alunoInicio').value;
+    const termino = document.getElementById('alunoTermino').value;
+    const turno = document.getElementById('alunoTurno').value;
+    const status = document.getElementById('alunoStatus').value;
+
+    // Validações claras (evita falha silenciosa)
+    if(!nome){ showToast('Informe o nome do aluno.'); return; }
+    if(!campoValor){ showToast('Não há campo vinculado a esta unidade. Cadastre um campo primeiro.'); return; }
+    if(!inicio || !termino){ showToast('Preencha as datas de início e término.'); return; }
+    if(termino < inicio){ showToast('A data de término não pode ser anterior à de início.'); return; }
+
+    const campoId = Number(campoValor);
+    const campo = campos.find(c => c.id === campoId);
+
+    // Checar disponibilidade de vaga no turno escolhido (só para status Ativo)
+    if(campo && status === 'Ativo'){
+      const stat = getTurnoStats(campo).find(t => t.label === turno);
+      if(stat && stat.disponiveis <= 0){
+        showToast(`Sem vagas no turno ${turno} neste campo. Escolha outro turno ou campo.`);
+        return;
+      }
+    }
+
+    const novoAluno = {
+      nome,
+      unidade,
+      campoId,
+      turno,
+      inicio,
+      termino,
+      status,
+      custo: Number(document.getElementById('alunoCusto').value) || 0
+    };
+
+    e.target.reset();
+    document.querySelector('input[name="formType"][value="aluno"]').checked = true;
+    showToast('Salvando e sincronizando com a equipe…');
+    try{
+      await adicionarAlunoRemoto(novoAluno);
+      showToast('Aluno adicionado com sucesso!');
+    }catch(err){
+      console.error(err);
+      showToast('Não foi possível salvar o aluno. Tente novamente.');
+    }
+  });
+
+  // ============== SUBMIT: NOVO CAMPO ==============
+  document.getElementById('formCampo').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nome = document.getElementById('campoNome').value.trim();
+    const unidadesSelecionadas = [...document.querySelectorAll('input[name="campoUnidadeCheck"]:checked')]
+      .map(cb => cb.value);
+
+    const vagas = {
+      manha: Number(document.getElementById('campoVagasManha').value) || 0,
+      tarde: Number(document.getElementById('campoVagasTarde').value) || 0,
+      noite: Number(document.getElementById('campoVagasNoite').value) || 0,
+      fimDeSemana: Number(document.getElementById('campoVagasFDS').value) || 0
+    };
+    const totalVagas = vagas.manha + vagas.tarde + vagas.noite + vagas.fimDeSemana;
+
+    // Validações claras
+    if(!nome){ showToast('Informe o nome do hospital/clínica.'); return; }
+    if(unidadesSelecionadas.length === 0){ showToast('Selecione ao menos uma unidade para o campo.'); return; }
+    if(totalVagas === 0){ showToast('Defina ao menos uma vaga em algum turno.'); return; }
+
+    const novoCampo = {
+      unidades: unidadesSelecionadas,
+      hospital: nome,
+      tipo: document.getElementById('campoTipo').value,
+      vagas
+    };
+
+    e.target.reset();
+    showToast('Salvando e sincronizando com a equipe…');
+    try{
+      await adicionarCampoRemoto(novoCampo);
+      showToast('Campo de estágio adicionado com sucesso!');
+    }catch(err){
+      console.error(err);
+      showToast('Não foi possível salvar o campo. Tente novamente.');
+    }
+  });
+
+  // ============== INIT ==============
+  document.getElementById('syncRefreshBtn').addEventListener('click', () => {
+    if(sb){
+      recarregarEAtualizar();
+    } else {
+      showToast('Supabase não configurado. Veja as instruções no comentário do código.');
+    }
+  });
+
+  function initApp(){
+    if(sb){
+      setStatusSync('loading', '🔄 Conectando ao banco da equipe…');
+      carregarTudoDoSupabase()
+        .then(() => {
+          renderAll();
+          setStatusSync('ok', '✅ Sincronizado com a equipe');
+          iniciarRealtimeSupabase();
+        })
+        .catch(err => {
+          console.error('Erro ao conectar ao Supabase:', err);
+          setStatusSync('offline', '⚠️ Erro ao conectar ao Supabase — verifique a URL/chave e se as tabelas existem');
+          campos = SEED_CAMPOS.map(c => ({ ...c }));
+          alunos = SEED_ALUNOS.map(a => ({ ...a }));
+          renderAll();
+        });
+    } else {
+      setStatusSync('offline', supabaseConfigurado
+        ? '⚠️ Não foi possível conectar ao Supabase — usando dados locais'
+        : '⚠️ Supabase não configurado — modo demonstração (dados locais)');
+      campos = SEED_CAMPOS.map(c => ({ ...c }));
+      alunos = SEED_ALUNOS.map(a => ({ ...a }));
+      renderAll();
+    }
+  }
+
+  initApp();
+</script>
+
+</body>
+</html>
